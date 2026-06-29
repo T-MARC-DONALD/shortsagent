@@ -1,0 +1,23 @@
+# Render.com Blueprint — deploys ShortsAgent as a free web service
+# This file tells Render how to deploy your app automatically.
+# Sign up at render.com, connect your GitHub repo, and use this blueprint.
+
+services:
+  - type: web
+    name: shortsagent
+    runtime: docker
+    plan: free
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /api/system-check
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        value: file:./db/custom.db
+      - key: PORT
+        value: 3000
+    disk:
+      # Free tier doesn't support persistent disks, but this is here for when you upgrade
+      name: data
+      mountPath: /app/db
+      sizeGB: 1

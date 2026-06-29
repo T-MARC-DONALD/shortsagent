@@ -1,0 +1,179 @@
+// ShortsAgent — Prisma schema (10 models)
+// Full-stack YouTube Shorts automation platform
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Video {
+  id              String   @id @default(cuid())
+  youtubeId       String   @unique
+  title           String
+  description     String?
+  channelTitle    String?
+  thumbnail       String?
+  duration        Int      // seconds
+  viewCount       Int      @default(0)
+  likeCount       Int      @default(0)
+  commentCount    Int      @default(0)
+  niche           String?
+  viralScore      Int      @default(0)
+  hookType        String?  // shock | curiosity | fomo | emotion | listicle
+  // Pipeline state: discovered | generating | ready | posting | posted | failed
+  status          String   @default("discovered")
+  filePath        String?
+  shortClipCount  Int      @default(0)
+  // Best segments JSON: [{ start, end, reason, viralScore }]
+  clipSegments    String?
+  generatedTitle  String?
+  generatedTags   String?
+  generatedDesc   String?
+  audioTrack      String?
+  // Posting
+  postedAt        DateTime?
+  postedPlatforms String?  // JSON array: ["youtube","tiktok",...]
+  // YouTube Analytics metrics (pulled from API when connected)
+  ytViews         Int      @default(0)
+  ytLikes         Int      @default(0)
+  ytComments      Int      @default(0)
+  ytShares        Int      @default(0)
+  ytWatchTime     Int      @default(0) // minutes
+  ytSubsGained    Int      @default(0)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model AgentSettings {
+  id              String   @id @default("global")
+  niche           String   @default("tech")
+  channelName     String   @default("@ShortsAgent")
+  postingSchedule String   @default("0 9,12,18 * * *")
+  autoPost        Boolean  @default(false)
+  minViews        Int      @default(50000)
+  maxDuration     Int      @default(900) // seconds (15 min)
+  clipsPerDay     Int      @default(3)
+  titleStyle      String   @default("curiosity")
+  language        String   @default("en")
+  // Repost settings (v10)
+  autoRepost      Boolean  @default(false)
+  repostNiche     String   @default("tech")
+  repostMinViews  Int      @default(100000)
+  repostCreditFmt String   @default("Credit: @creator")
+  repostMaxPerDay Int      @default(5)
+  repostInterval  Int      @default(60) // minutes
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model ActivityLog {
+  id        String   @id @default(cuid())
+  action    String   // discover | generate | post | schedule_run | repost | ...
+  detail    String?
+  level     String   @default("info") // info | success | warning | error
+  meta      String?  // JSON
+  createdAt DateTime @default(now())
+}
+
+model Schedule {
+  id          String   @id @default(cuid())
+  name        String
+  kind        String   // cron | fixed_rate | one_time
+  expr        String   // cron expression OR fixed interval (e.g. "60") OR epoch millis
+  stages      String   // JSON: ["discover","generate","post"]
+  niche       String?
+  timezone    String   @default("America/Los_Angeles")
+  enabled     Boolean  @default(true)
+  lastRunAt   DateTime?
+  nextRunAt   DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model RunHistory {
+  id           String   @id @default(cuid())
+  scheduleId   String?
+  scheduleName String?
+  status       String   // success | failed | running
+  startedAt    DateTime @default(now())
+  finishedAt   DateTime?
+  durationMs   Int      @default(0)
+  stage        String?  // discover | generate | post
+  results      String?  // JSON summary
+  error        String?
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  type      String   @default("info") // info | success | warning | error | viral
+  title     String
+  message   String?
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
+
+model SocialAccount {
+  id             String   @id @default(cuid())
+  platform       String   // youtube | tiktok | instagram | twitter
+  handle         String?
+  displayName    String?
+  avatar         String?
+  followerCount  Int      @default(0)
+  uploadCount    Int      @default(0)
+  autoUpload     Boolean  @default(true)
+  accessToken    String?
+  refreshToken   String?
+  tokenExpiresAt DateTime?
+  tokenStatus    String   @default("valid") // valid | warning | critical | expired
+  connected      Boolean  @default(false)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model OAuthConfig {
+  id          String   @id @default(cuid())
+  platform    String   @unique // youtube | tiktok | instagram | twitter
+  clientId    String?
+  clientSecret String?
+  redirectUri String?
+  scopes      String?
+  updatedAt   DateTime @updatedAt
+}
+
+model SocialPost {
+  id           String   @id @default(cuid())
+  videoId      String?
+  platform     String   // youtube | tiktok | instagram | twitter
+  externalId   String?
+  status       String   @default("pending") // pending | uploading | posted | failed
+  permalink    String?
+  errorMessage String?
+  postedAt     DateTime?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model RepostJob {
+  id            String   @id @default(cuid())
+  sourceUrl     String
+  sourceShortId String?
+  title         String?
+  creator       String?
+  thumbnail     String?
+  viewCount     Int      @default(0)
+  likeCount     Int      @default(0)
+  niche         String?
+  // pending | downloading | processing | ready | uploading | posted | failed
+  status        String   @default("pending")
+  progress      Int      @default(0)
+  filePath      String?
+  creditFormat  String   @default("Credit: @creator")
+  postedPlatforms String? // JSON: ["youtube", ...]
+  errorMessage  String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}

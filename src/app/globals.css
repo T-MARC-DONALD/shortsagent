@@ -1,0 +1,160 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  --background: #f5f7f6;
+  --foreground: #0a1410;
+  --card: #ffffff;
+  --card-foreground: #0a1410;
+  --popover: #ffffff;
+  --popover-foreground: #0a1410;
+  --primary: #047857;
+  --primary-foreground: #ecfdf5;
+  --secondary: #d1fae5;
+  --secondary-foreground: #064e3b;
+  --muted: #e6f4ee;
+  --muted-foreground: #4b6358;
+  --accent: #a7f3d0;
+  --accent-foreground: #064e3b;
+  --destructive: #dc2626;
+  --destructive-foreground: #fef2f2;
+  --border: #d1e7dc;
+  --input: #d1e7dc;
+  --ring: #047857;
+  --radius: 0.625rem;
+  --sidebar-background: #ffffff;
+  --sidebar-foreground: #0a1410;
+  --sidebar-primary: #047857;
+  --sidebar-primary-foreground: #ecfdf5;
+  --sidebar-accent: #ecfdf5;
+  --sidebar-accent-foreground: #064e3b;
+  --sidebar-border: #d1e7dc;
+  --sidebar-ring: #047857;
+}
+
+.dark {
+  --background: #050d0a;
+  --foreground: #d1fae5;
+  --card: #0a1a13;
+  --card-foreground: #d1fae5;
+  --popover: #0a1a13;
+  --popover-foreground: #d1fae5;
+  --primary: #10b981;
+  --primary-foreground: #052e1f;
+  --secondary: #0f2a1f;
+  --secondary-foreground: #a7f3d0;
+  --muted: #0f2a1f;
+  --muted-foreground: #6b8a7a;
+  --accent: #064e3b;
+  --accent-foreground: #a7f3d0;
+  --destructive: #ef4444;
+  --destructive-foreground: #fef2f2;
+  --border: #1a3a2a;
+  --input: #1a3a2a;
+  --ring: #10b981;
+  --sidebar-background: #050d0a;
+  --sidebar-foreground: #d1fae5;
+  --sidebar-primary: #10b981;
+  --sidebar-primary-foreground: #052e1f;
+  --sidebar-accent: #0f2a1f;
+  --sidebar-accent-foreground: #a7f3d0;
+  --sidebar-border: #1a3a2a;
+  --sidebar-ring: #10b981;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-sidebar: var(--sidebar-background);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+
+* {
+  border-color: var(--border);
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  font-feature-settings: "rlig" 1, "calt" 1;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--muted-foreground);
+}
+
+/* Emerald glow utility */
+.emerald-glow {
+  box-shadow: 0 0 0 1px rgba(16, 185, 129, 0.15), 0 4px 24px -8px rgba(16, 185, 129, 0.35);
+}
+
+.emerald-text-glow {
+  text-shadow: 0 0 12px rgba(16, 185, 129, 0.5);
+}
+
+/* Animated grid background */
+.grid-bg {
+  background-image:
+    linear-gradient(to right, rgba(16, 185, 129, 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(16, 185, 129, 0.05) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+
+/* Live pulse for active elements */
+@keyframes emerald-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+.emerald-pulse {
+  animation: emerald-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Status badge dot */
+.status-dot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 9999px;
+  margin-right: 6px;
+}
